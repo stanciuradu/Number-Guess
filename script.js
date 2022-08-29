@@ -13,7 +13,9 @@ let min = 1,
   max = 10,
   // numarul castigator salvat intr-o variabila, acesta este 2 pentru inceput
   // ulterior voi crea o functie care va genera un nr random intre 1 si 10
-  winningNumber = 2,
+
+  // acum vreau sa creez o functie random care genereaza un numar
+  winningNumber = getRandomNum(min, max),
   // user-ul are trei incercari de a ghici
   guessesLeft = 3;
 
@@ -21,6 +23,15 @@ let min = 1,
 // am specificat ca cele doua elemente din HTML sa aiba valorile min si max. Daca incerc sa modific in HTML valoarea lui 10 cu 20, nu se va putea realiza modificarea
 minNumber.textContent = min;
 maxNumber.textContent = max;
+
+// play again eventListener
+game.addEventListener("mousedown", function (event) {
+  // daca este selectat butonul cu clasa play-again
+  if (event.target.className == "play-again") {
+    // atunci vreau sa se dea refresh la pagina
+    window.location.reload();
+  }
+});
 
 // crearea evenimentului la click pe buton
 guessBtn.addEventListener("click", guessNumber);
@@ -50,7 +61,7 @@ function guessNumber() {
     } else {
       // styling border
       guessInput.style.borderColor = "red";
-      
+
       // clear the input
       guessInput.value = "";
 
@@ -87,4 +98,14 @@ function gameOver(won, msg) {
   // text-color
   message.style.color = color;
   setMessage(msg);
+
+  // play again?- cand jocul s-a terminat, se afiseaza pe butonul de submit play again
+  guessBtn.value = "Play Again";
+  // am asociat clasa play-again butonului
+  guessBtn.className += "play-again";
+}
+
+// getWinningNum-function-functie care genereaza un numar random intre min si max
+function getRandomNum(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
