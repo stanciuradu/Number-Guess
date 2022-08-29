@@ -31,23 +31,37 @@ function guessNumber() {
   if (isNaN(guess) || guess < min || guess > max) {
     // daca oricare dintre aceste trei conditii este true, vreau sa afisez un mesaj
     setMessage(`Please enter a number between ${min} and ${max}`, "green");
-  } else {
   }
-  // verificarea daca este numarul ghicit. El este pus in sistem ca valoare by default 2, INITIAL
 
+  // verificarea daca este numarul ghicit. El este pus in sistem ca valoare by default 2, INITIAL
   // daca valoarea din input este acceasi cu cea setata by default, atunci afiseaza acest mesaj
   if (winningNumber === guess) {
-    // disable input-practic bloch inputul
-    guessInput.disable = true;
-    // styling border
-    guessInput.style.borderColor = "green";
-    setMessageWinning(
-      `Correct! The value of number is ${winningNumber}`,
-      "green"
-    );
+    gameOver(true, `${winningNumber} is correct, You WIN!`);
   } else {
-    // numar gresit
-    setErrorMessage(`You have ${(guessesLeft -= 1)} more changes`, "red");
+    // Lose case-cazul cand numarul introdus este gresit, santa user-ului scade cu 1
+    guessesLeft -= 1;
+    // setErrorMessage(`You have ${(guessesLeft -= 1)} more changes`, "red");
+    // daca numarul de sanse este egal cu 0, asta inseama ca jocul este terminat si ai pierdut
+    if (guessesLeft === 0) {
+      gameOver(
+        false,
+        `Game over, you lost. The correct number was ${winningNumber}`
+      );
+    } else {
+      // styling border
+      guessInput.style.borderColor = "red";
+      
+      // clear the input
+      guessInput.value = "";
+
+      // raspunsul este gresit dar jocul continua- practic pe ramura asta iti arata cate sanse mai ai de a ghici numarul pana cand jocul se termina si intra pe ramura principala
+      // practic, imi doresc sa se afiseze un mesaj cu numarul scazut de sanse cu o unitate, si sa fie de culoare rosie
+      // valoarea introdusa din input nu este corecta. Mai ai winningNumber-1 sanse
+      setMessage(
+        `${guess} is not correct, ${guessesLeft} changes to guess`,
+        "red"
+      );
+    }
   }
 }
 
@@ -59,14 +73,18 @@ function setMessage(msg, color) {
   message.style.color = color;
 }
 
-// setMessageWinning function
-function setMessageWinning(msgInfo, color) {
-  message.textContent = msgInfo;
-  message.style.color = color;
-}
+//creez o functie care se numeste Game Over, care primeste doi parametri-won care este tru/false si mesajul(msg)
+// prin intermediul acestei functii voi incolui atat parte de blocare a inputului cat si partea de stilizare a bordurii si afisare a mesajului
+function gameOver(won, msg) {
+  let color;
+  // daca este won , atunci culoarea bordurii este green, altfel este red
+  won === true ? (color = "green") : (color = "red");
 
-// setErrorMessage function
-function setErrorMessage(errorInfo, color) {
-  message.textContent = errorInfo;
+  // disable input-practic bloch inputul
+  guessInput.disable = true;
+  // styling border
+  guessInput.style.borderColor = color;
+  // text-color
   message.style.color = color;
+  setMessage(msg);
 }
